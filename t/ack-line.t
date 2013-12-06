@@ -95,7 +95,7 @@ LINE_1_AND_5_AND_NON_EXISTENT: {
 }
 
 LINE_AND_PASSTHRU: {
-    my @expected = split( /\n/, <<"EOF" );
+    my @expected = split( /\n/, <<'EOF' );
 =head1 Dummy document
 
 =head2 There's important stuff in here!
@@ -167,7 +167,7 @@ LINE_WITH_REGEX: {
 
     my ($stdout, $stderr) = run_ack_with_stderr( @args, @files );
     isnt( get_rc(), 0, 'Specifying both --line and --match must lead to an error RC' );
-    is_deeply( $stdout, [], 'No normal output' );
+    is_empty_array( $stdout, 'No normal output' );
     is( scalar @{$stderr}, 1, 'One line of stderr output' );
     like( $stderr->[0], qr/\Q(Sue)/, 'Error message must contain "(Sue)"' );
 }

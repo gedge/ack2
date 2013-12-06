@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-our $VERSION = '2.11_02'; # Check http://beyondgrep.com/ for updates
+our $VERSION = '2.13_01'; # Check http://beyondgrep.com/ for updates
 
 use 5.008008;
 use Getopt::Long 2.35 ();
@@ -2204,6 +2204,9 @@ L<https://github.com/petdance/ack2>
 How appropriate to have I<ack>nowledgements!
 
 Thanks to everyone who has contributed to ack in any way, including
+Fraser Tweedale,
+RaE<aacute>l GundE<aacute>n,
+Steffen Jaeckel,
 Stephan Hohe,
 Michael Beijen,
 Alexandr Ciornii,
