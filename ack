@@ -510,8 +510,40 @@ sub print_line_with_options {
             $line =~ /$opt->{regex}/o; # this match is redundant, but we need
                                        # to perfom it in order to get if
                                        # capture groups are set
+            if ($^V ge v5.10.0 and keys %+) {
+                my %plus = %+;
+                while ( $line =~ /$opt->{regex}/og ) {
+                    my $previous_match_end = 0;
+                    my $offset = 0; # additional offset for when we add stuff
+                    for ( my $i = 1; $i < @+; $i++ ) {
+                        my ( $match_start, $match_end ) = ( $-[$i], $+[$i] );
+                        next unless defined($match_start);
+                        next if $match_start < $previous_match_end;
+                        my $substring = substr( $line,
+                            $offset + $match_start, $match_end - $match_start );
 
-            if ( @+ > 1 ) { # if we have captures
+                        for my $key_col (keys %plus) {
+                            my $col = $key_col;
+                            substr($col, index($col, '_on_'), 1, ' ') if index($col, '_on_') >= 0;
+                            substr($col, -1, 1, '') while index($col, '_') >= 0 and grep { $_ eq substr($col, -1, 1) } qw/ _ 0 1 2 3 4 5 6 7 8 9 /;
+
+                            next if $substring ne $plus{$key_col};
+
+                            my $substitution = Term::ANSIColor::colored( $substring, $col );
+
+                            substr( $line, $offset + $match_start,
+                                $match_end - $match_start, $substitution );
+
+                            $previous_match_end  = $match_end; # offsets do not need to be applied
+                            $offset             += length( $substitution ) - length( $substring );
+                            last;
+                        }
+
+                    }
+                    pos($line) = $+[0] + $offset;
+                }
+            }
+            elsif ( @+ > 1 ) { # if we have captures
                 while ( $line =~ /$opt->{regex}/og ) {
                     my $offset = 0; # additional offset for when we add stuff
                     my $previous_match_end = 0;
