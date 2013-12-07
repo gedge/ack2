@@ -533,12 +533,18 @@ sub print_count0 {
 
 sub set_up_pager {
     my $command = shift;
+    my $flush = shift;
 
     return if App::Ack::output_to_pipe();
 
     my $pager;
     if ( not open( $pager, '|-', $command ) ) {
         App::Ack::die( qq{Unable to pipe to pager "$command": $!} );
+    }
+    if ( $flush ) {
+        my $old_out = select $pager;
+        $| = 1;
+        select $old_out;
     }
     $fh = $pager;
 

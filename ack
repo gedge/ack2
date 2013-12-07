@@ -949,7 +949,7 @@ sub main {
             $resources = App::Ack::Resources->from_argv( $opt, \@start );
         }
     }
-    App::Ack::set_up_pager( $opt->{pager} ) if defined $opt->{pager};
+    App::Ack::set_up_pager( $opt->{pager}, $opt->{flush} ) if defined $opt->{pager};
 
     my $print_filenames = $opt->{show_filename};
     my $max_count       = $opt->{m};
